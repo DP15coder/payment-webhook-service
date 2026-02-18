@@ -1,0 +1,49 @@
+services:
+  # Web service for FastAPI
+  - type: web
+    name: transaction-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: transaction-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: transaction-redis
+          property: connectionString
+      - key: ENVIRONMENT
+        value: production
+
+  # Worker service for RQ
+  - type: worker
+    name: transaction-worker
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: rq worker transactions --url $REDIS_URL
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: transaction-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: transaction-redis
+          property: connectionString
+      - key: ENVIRONMENT
+        value: production
+
+# Managed PostgreSQL database
+databases:
+  - name: transaction-db
+    plan: free
+
+# Managed Redis instance
+redis:
+  - name: transaction-redis
+    plan: free
+    ipAllowList: [] # Recommended for internal access only

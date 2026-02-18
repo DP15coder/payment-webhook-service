@@ -6,3 +6,4 @@ redis==5.0.3
 rq==1.16.2
 python-dotenv==1.0.1
 pydantic==2.7.0
+gunicorn==22.0.0

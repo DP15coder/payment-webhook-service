@@ -144,17 +144,19 @@ Because:
 
 the `POST /v1/webhooks/transactions` endpoint consistently responds well under **500ms**, even under load (actual performance depends on your environment).
 
-### Deployment Notes (Cloud)
+### Deployment to Render
 
-Example deployment approach:
+This project is configured for easy deployment to **Render** using the included `render.yaml` Blueprint.
 
-- **API**:
-  - Deploy FastAPI app on a PaaS such as Render, Railway, or Fly.io using `uvicorn app.main:app`.
-- **Database**:
-  - Use managed PostgreSQL (e.g., Neon, Supabase, RDS); set `DATABASE_URL` accordingly.
-- **Redis + Worker**:
-  - Use a managed Redis service (e.g., Upstash, Redis Cloud) and configure `REDIS_URL`.
-  - Run a separate worker dyno/container: `rq worker transactions --url "$REDIS_URL"`.
+1.  **Push your code** to a GitHub repository.
+2.  **Connect to Render**: Log in to [Render](https://render.com) and click **New > Blueprint**.
+3.  **Select Repository**: Connect your GitHub repo and select the repository for this project.
+4.  **Confirm Blueprint**: Render will automatically detect the `render.yaml` file and show you the services to be created:
+    - **transaction-api**: Web Service (FastAPI)
+    - **transaction-worker**: Background Worker (RQ)
+    - **transaction-db**: Managed PostgreSQL
+    - **transaction-redis**: Managed Redis
+5.  **Deploy**: Click **Apply** to start the deployment.
 
-Keep the README updated with your chosen provider and any extra configuration steps.
+Render will handle setting up the database connection strings and linking the services automatically.
 
