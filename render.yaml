@@ -12,7 +12,7 @@ services:
           property: connectionString
       - key: REDIS_URL
         fromService:
-          type: redis
+          type: keyvalue
           name: transaction-redis
           property: connectionString
       - key: ENVIRONMENT
@@ -31,19 +31,19 @@ services:
           property: connectionString
       - key: REDIS_URL
         fromService:
-          type: redis
+          type: keyvalue
           name: transaction-redis
           property: connectionString
       - key: ENVIRONMENT
         value: production
 
+  # Managed Redis instance (Key Value)
+  - type: keyvalue
+    name: transaction-redis
+    plan: free
+    ipAllowList: [] # Recommended for internal access only
+
 # Managed PostgreSQL database
 databases:
   - name: transaction-db
     plan: free
-
-# Managed Redis instance
-redis:
-  - name: transaction-redis
-    plan: free
-    ipAllowList: [] # Recommended for internal access only
