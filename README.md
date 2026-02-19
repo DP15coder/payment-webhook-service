@@ -144,19 +144,20 @@ Because:
 
 the `POST /v1/webhooks/transactions` endpoint consistently responds well under **500ms**, even under load (actual performance depends on your environment).
 
-### Deployment to Render
+### Deployment to Railway
 
-This project is configured for easy deployment to **Render** using the included `render.yaml` Blueprint.
+## Deployed  URL 
+https://transaction-api-production-714a.up.railway.app/
 
-1.  **Push your code** to a GitHub repository.
-2.  **Connect to Render**: Log in to [Render](https://render.com) and click **New > Blueprint**.
-3.  **Select Repository**: Connect your GitHub repo and select the repository for this project.
-4.  **Confirm Blueprint**: Render will automatically detect the `render.yaml` file and show you the services to be created:
-    - **transaction-api**: Web Service (FastAPI)
-    - **transaction-worker**: Background Worker (RQ)
-    - **transaction-db**: Managed PostgreSQL
-    - **transaction-redis**: Managed Redis
-5.  **Deploy**: Click **Apply** to start the deployment.
+Services Used
 
-Render will handle setting up the database connection strings and linking the services automatically.
+- transaction-api → FastAPI web service
+- transaction-worker → RQ background worker
+- transaction-db → PostgreSQL database
 
+ Redis → Managed Redis instance
+
+- Railway Environment Variables
+- For transaction-api and transaction-worker:
+- DATABASE_URL=${{transaction-db.DATABASE_URL}}
+-REDIS_URL=<your-redis-connection-s
