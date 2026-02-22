@@ -28,7 +28,7 @@ def process_transaction(transaction_id: str) -> None:
     Idempotent: if transaction is already PROCESSED/FAILED, it is left unchanged.
     """
     # simulate external API latency
-    time.sleep(25)
+    time.sleep(15)
 
     with db_session() as session:
         tx: Transaction | None = session.scalar(
