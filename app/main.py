@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+from typing import List
 
 from .config import get_settings
 from .database import Base, engine, get_db
@@ -101,23 +102,40 @@ def ingest_transaction_webhook(
     )
 
 
+# @app.get(
+#     f"{settings.api_prefix}/transactions/{{transaction_id}}",
+#     response_model=TransactionOut,
+# )
+# def get_transaction_status(
+#     transaction_id: str,
+#     db: Session = Depends(get_db),
+# ) -> TransactionOut:
+#     """
+#     Retrieve transaction status and timing info.
+#     """
+#     tx: Transaction | None = db.scalar(
+#         select(Transaction).where(Transaction.transaction_id == transaction_id)
+#     )
+
+#     if not tx:
+#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Transaction not found")
+
+#     return TransactionOut.model_validate(tx)
+
 @app.get(
     f"{settings.api_prefix}/transactions/{{transaction_id}}",
-    response_model=TransactionOut,
+    response_model=List[TransactionOut],
 )
 def get_transaction_status(
     transaction_id: str,
     db: Session = Depends(get_db),
-) -> TransactionOut:
-    """
-    Retrieve transaction status and timing info.
-    """
+) -> List[TransactionOut]:
+
     tx: Transaction | None = db.scalar(
         select(Transaction).where(Transaction.transaction_id == transaction_id)
     )
 
     if not tx:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Transaction not found")
+        return []
 
-    return TransactionOut.model_validate(tx)
-
+    return [TransactionOut.model_validate(tx)]
